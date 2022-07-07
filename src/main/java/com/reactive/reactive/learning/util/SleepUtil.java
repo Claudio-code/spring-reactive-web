@@ -1,9 +1,8 @@
 package com.reactive.reactive.learning.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class SleepUtil {
     public static void sleepSeconds(int seconds) {
         try {
