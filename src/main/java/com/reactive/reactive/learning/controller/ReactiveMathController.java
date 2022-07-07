@@ -2,6 +2,7 @@ package com.reactive.reactive.learning.controller;
 
 import com.reactive.reactive.learning.dto.MultiplyRequestDTO;
 import com.reactive.reactive.learning.dto.ResponseDTO;
+import com.reactive.reactive.learning.exception.InputValidationException;
 import com.reactive.reactive.learning.service.ReactiveMathService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -12,7 +13,7 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 @RestController
 @RequestMapping("reactive/math")
-public class ReactiveMathController {
+public class ReactiveMathController extends ReactiveValidationHandler {
     private ReactiveMathService reactiveMathService;
 
     @GetMapping("square/{input}")
@@ -33,5 +34,19 @@ public class ReactiveMathController {
     @PostMapping
     public Mono<ResponseDTO> multiply(@RequestBody Mono<MultiplyRequestDTO> multiplyRequestDTOMono) {
         return reactiveMathService.multiply(multiplyRequestDTOMono);
+    }
+
+    @GetMapping("square/{input}/throw")
+    public Mono<ResponseDTO> findSquareThrow(@PathVariable int input) {
+        return Mono.just(input)
+                .handle(((integer, sink) -> {
+                    if (integer <= 10 || integer >= 20) {
+                        sink.next(integer);
+                        return;
+                    }
+                    sink.error(new InputValidationException(integer));
+                }))
+                .cast(Integer.class)
+                .flatMap(item -> reactiveMathService.findSquare(item));
     }
 }
