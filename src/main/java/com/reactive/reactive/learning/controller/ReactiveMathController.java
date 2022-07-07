@@ -6,6 +6,7 @@ import com.reactive.reactive.learning.exception.InputValidationException;
 import com.reactive.reactive.learning.service.ReactiveMathService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -48,5 +49,14 @@ public class ReactiveMathController extends ReactiveValidationHandler {
                 }))
                 .cast(Integer.class)
                 .flatMap(item -> reactiveMathService.findSquare(item));
+    }
+
+    @GetMapping("square/{input}/throw/assignment")
+    public Mono<ResponseEntity<ResponseDTO>> findSquareThrowAssignment(@PathVariable int input) {
+        return Mono.just(input)
+                .filter(item -> item <= 10 || item >= 20)
+                .flatMap(item -> reactiveMathService.findSquare(item))
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.badRequest().build());
     }
 }
