@@ -8,7 +8,7 @@ COPY settings.gradle .
 
 COPY src src
 
-RUN gradle build --no-daemon
+RUN gradle build
 
 FROM openjdk:17-slim-bullseye
 

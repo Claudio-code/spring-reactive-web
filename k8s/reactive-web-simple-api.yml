@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: reactive-web-simple-api
+  name: reactive-web-simple-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reactive-web-simple-api
+  template:
+    metadata:
+      labels:
+        app: reactive-web-simple-api
+    spec:
+      containers:
+        - image: claudio2424/rest-consuming-another-api:latest
+          imagePullPolicy: Always
+          name: reactive-web-simple-api
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "300Mi"
+              cpu: "100m"
+            limits:
+              memory: "650Mi"
+              cpu: "500m"
+      restartPolicy: Always
