@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  reactive-web-simple-api:
+    container_name: reactive-web-simple-api
+    build: .
+    ports:
+      - "8080:8080"
+    networks:
+      - reactive-web-simple-api-network
+
+networks:
+  reactive-web-simple-api-network:
+    driver: bridge
