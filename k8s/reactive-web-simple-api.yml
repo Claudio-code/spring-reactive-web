@@ -1,18 +1,34 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: reactive
+spec:
+  finalizers:
+    - kubernetes
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: reactive-web-simple-api
+    run: reactive-web-simple-api
   name: reactive-web-simple-api
+  namespace: reactive
 spec:
   replicas: 1
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app: reactive-web-simple-api
+      run: reactive-web-simple-api
   template:
     metadata:
       labels:
         app: reactive-web-simple-api
+        run: reactive-web-simple-api
     spec:
       containers:
         - image: claudio2424/rest-consuming-another-api:latest
@@ -20,6 +36,7 @@ spec:
           name: reactive-web-simple-api
           ports:
             - containerPort: 8080
+              protocol: TCP
           resources:
             requests:
               memory: "300Mi"
@@ -27,4 +44,26 @@ spec:
             limits:
               memory: "650Mi"
               cpu: "500m"
+      dnsPolicy: ClusterFirst
       restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: reactive-web-simple-api
+  name: reactive-web-simple-api
+  namespace: reactive
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - port: 8080
+    nodePort: 32222
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    run: reactive-web-simple-api
+  type: NodePort
