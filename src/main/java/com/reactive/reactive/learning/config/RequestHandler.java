@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 @Service
 public class RequestHandler {
-    private ReactiveMathService reactiveMathService;
+    private final ReactiveMathService reactiveMathService;
 
     public Mono<ServerResponse> squareHandler(ServerRequest serverRequest) {
         final var input = getInputInteger(serverRequest);

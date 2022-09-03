@@ -9,15 +9,15 @@ import java.util.stream.IntStream;
 
 @Service
 public class MathService {
-    public ResponseDTO findSquare(int input) {
+    public ResponseDTO findSquare(final int input) {
         return new ResponseDTO(input * input);
     }
 
-    public List<ResponseDTO> multiplicationTable(int input) {
+    public List<ResponseDTO> multiplicationTable(final int input) {
         return IntStream.rangeClosed(1, 10)
-            .peek(SleepUtil::sleepSeconds)
-            .peek(item -> System.out.println("math-service processing :" + item))
-            .mapToObj(item -> new ResponseDTO(item * input))
-            .toList();
+                .peek(SleepUtil::sleepSeconds)
+                .peek(item -> System.out.println("math-service processing :" + item))
+                .mapToObj(item -> new ResponseDTO(item * input))
+                .toList();
     }
 }
